@@ -62,7 +62,7 @@ class Profile(models.Model):
 
 
 class Survey(models.Model):
-    questions_json = models.TextField()
+    questions_json = models.JSONField()
 
     class Meta:
         db_table = 'survey'
