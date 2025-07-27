@@ -3,9 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializer import BookSerializer
-from .models import Book,Survey
+from .models import Book,Survey,Tag,Taggeditem,Post
 from .model_forms import DynamicSurveyForm
 from django.shortcuts import get_object_or_404
+from django.contrib.contenttypes.models import ContentType
 
 class AllBookView(APIView):
     def get(self, request):
@@ -32,3 +33,16 @@ class SurveyView(APIView):
         else:
             return Response({"errors": form.errors}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ItemTagView(APIView):
+    def post(self, request):
+        post = Post.objects.first()
+        tag, _ = Tag.objects.get_or_create(name='Nature')
+        print()
+
+        Taggeditem.objects.create(
+            tag=tag,
+            content_type=ContentType.objects.get_for_model(Post),
+            object_id=post.id
+        )
+        return Response({"message": "post tagged successfully"}, status=status.HTTP_200_OK)

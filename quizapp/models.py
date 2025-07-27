@@ -2,6 +2,7 @@ from django.db import models
 from quizapp.managers import PublishedManager
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Author(models.Model):
@@ -79,6 +80,7 @@ class Taggeditem(models.Model):
     tag = models.ForeignKey(Tag, models.DO_NOTHING)
     content_type = models.ForeignKey(ContentType, models.DO_NOTHING)
     object_id = models.IntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         db_table = 'taggeditem'
