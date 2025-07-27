@@ -1,0 +1,6 @@
+from django.urls import path, include, re_path
+from .views import *
+app_name = 'data'
+urlpatterns = [
+    path("all-books/", AllBookView.as_view(), name="all_books"),
+]
