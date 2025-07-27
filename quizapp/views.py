@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializer import BookSerializer
-from .models import Book,Survey,Tag,Taggeditem,Post
+from .serializer import BookSerializer,CompanySerializer,UserCreateSerializer
+from .models import Book,Survey,Tag,Taggeditem,Post,Company
 from .model_forms import DynamicSurveyForm
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
@@ -46,3 +46,17 @@ class ItemTagView(APIView):
             object_id=post.id
         )
         return Response({"message": "post tagged successfully"}, status=status.HTTP_200_OK)
+    
+class AllCompanyWithEmployeesView(APIView):
+    def get(self, request):
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        return Response({"data":serializer.data,"tenant":request.tenant})
+    
+class UserCreateView(APIView):
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
